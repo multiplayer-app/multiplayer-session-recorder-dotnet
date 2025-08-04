@@ -49,7 +49,7 @@ var config = new SessionRecorderConfig
     ResourceAttributes = new Dictionary<string, object>
     {
         { "service.name", "{YOUR_APPLICATION_NAME}" },
-        { "environment": '{YOUR_APPLICATION_ENVIRONMENT}' },
+        { "environment": "{YOUR_APPLICATION_ENVIRONMENT}" },
         { "host.name", Environment.MachineName },
     },
 };
