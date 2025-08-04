@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net481;net48;net472;net471;net47;net462</TargetFrameworks>
+    <TargetFrameworksForLibraries>net9.0;net8.0;netstandard2.0;net462</TargetFrameworksForLibraries>
+    <TargetFrameworksForLibrariesExtended>net9.0;net8.0;netstandard2.1;netstandard2.0;net462</TargetFrameworksForLibrariesExtended>
+    <TargetFrameworksForPrometheusAspNetCore>net9.0;net8.0</TargetFrameworksForPrometheusAspNetCore>
+    <TargetFrameworksRequiringSystemTextJsonDirectReference>net8.0;netstandard2.1;netstandard2.0;net462</TargetFrameworksRequiringSystemTextJsonDirectReference>
+
+    <LangVersion>latest</LangVersion>
+    <Description>OpenTelemetry .NET SDK</Description>
+    <MinVerTagPrefix>core-</MinVerTagPrefix>
+    <PackageTags>SessionRecorder;distributed-tracing;AspNet;AspNetCore</PackageTags>
+    <AssemblyName>SessionRecorder</AssemblyName>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <NuGetAudit>true</NuGetAudit>
+    <NuGetAuditMode>all</NuGetAuditMode>
+    <NuGetAuditLevel>low</NuGetAuditLevel>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Label="PackageProperties">
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/multiplayer-app/multiplayer-otlp-dotnet</RepositoryUrl>
+    <PackageTags>Observability;OpenTelemetry;Monitoring;Telemetry;Tracing;Metrics;Logging;Multiplayer;SessionRecorder</PackageTags>
+    <PackageProjectUrl>https://www.multiplayer.app/</PackageProjectUrl>
+    <Authors>Multiplayer Authors</Authors>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackagePrimaryLicenseFile>LICENSE</PackagePrimaryLicenseFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include=".\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="SessionRecorder" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
+    <PackageReference Include="OpenTelemetry" Version="1.11.1" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.11.1" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.11.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.11.0" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.11.1" />
+    <PackageReference Include="System.Text.Json" Version="9.0.2" />
+  </ItemGroup>
+
+</Project>
