@@ -1,18 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SessionRecorderCommon;
+using System.IO;
+using System.Text.Json;
+using System.Text;
+using System.Diagnostics;
+using System.Linq;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using SessionRecorder.Constants;
+using SessionRecorder.Config;
 
 public class SessionRecorderHttpCaptureMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly ILogger<OpenTelemetryHttpCaptureMiddleware> _logger;
+    private readonly ILogger<SessionRecorderHttpCaptureMiddleware> _logger;
     private readonly HttpCaptureOptions _options;
 
-    public OpenTelemetryHttpCaptureMiddleware(
+    public SessionRecorderHttpCaptureMiddleware(
         RequestDelegate next,
-        ILogger<OpenTelemetryHttpCaptureMiddleware> logger,
+        ILogger<SessionRecorderHttpCaptureMiddleware> logger,
         IOptions<HttpCaptureOptions> options)
     {
         _next = next;
@@ -64,8 +72,8 @@ public class SessionRecorderHttpCaptureMiddleware
         // Body
         if (_options.CaptureBody && context.Request.ContentLength > 0 && context.Request.Body.CanRead)
         {
-            context.Request.EnableBuffering();
-            using var reader = new StreamReader(context.Request.Body, leaveOpen: true);
+            // context.Request.EnableBuffering(); // Not available in older .NET versions
+            using var reader = new StreamReader(context.Request.Body, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, bufferSize: 1024, leaveOpen: true);
             var body = await reader.ReadToEndAsync();
             context.Request.Body.Position = 0;
 

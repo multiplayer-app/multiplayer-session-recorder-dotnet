@@ -6,26 +6,24 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 using SessionRecorder.Types;
 using SessionRecorder.Config;
+using SessionRecorder.Constants;
 
-public class StartSessionRequest
+namespace SessionRecorder.Services
 {
-    public string? Name { get; set; }
-    public Dictionary<string, object>? ResourceAttributes { get; set; }
-    public Dictionary<string, object>? SessionAttributes { get; set; }
-    public List<Tag>? Tags { get; set; }
+    public class StartSessionRequest
+{
+    public string Name { get; set; } = string.Empty;
+    public List<Tag> Tags { get; set; } = new List<Tag>();
+    public Dictionary<string, object> SessionAttributes { get; set; } = new Dictionary<string, object>();
+    public Dictionary<string, object> ResourceAttributes { get; set; } = new Dictionary<string, object>();
 }
 
 public class StopSessionRequest
 {
-    public SessionAttributes? SessionAttributes { get; set; }
-}
-
-public class SessionAttributes
-{
-    public string? Email { get; set; }
-    public string? Comment { get; set; }
+    public Dictionary<string, object> SessionAttributes { get; set; } = new Dictionary<string, object>();
 }
 
 public class Tag
@@ -43,7 +41,7 @@ public class RemoteSessionResponse
 public class ApiServiceConfig
 {
     public string? ApiKey { get; set; }
-    public string ExporterApiBaseUrl { get; set; } = Constants.MULTIPLAYER_BASE_API_URL;
+    public string ExporterApiBaseUrl { get; set; } = Constants.Constants.MULTIPLAYER_BASE_API_URL;
     public bool? ContinuousDebugging { get; set; }
 }
 
@@ -75,7 +73,7 @@ public class ApiService
 
     public async Task<object?> StopSession(string sessionId, StopSessionRequest requestBody)
     {
-        return await MakeRequest<object>($"/debug-sessions/{sessionId}/stop", HttpMethod.Patch, requestBody);
+        return await MakeRequest<object>($"/debug-sessions/{sessionId}/stop", new HttpMethod("PATCH"), requestBody);
     }
 
     public async Task<object?> CancelSession(string sessionId)
@@ -150,4 +148,5 @@ public class ApiService
             ContinuousDebugging = update.ContinuousDebugging ?? original.ContinuousDebugging
         };
     }
+}
 }

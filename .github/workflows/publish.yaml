@@ -25,21 +25,22 @@ jobs:
         with:
           dotnet-version: "9.0.x"
 
-      - name: Restore packages
-        run: dotnet restore ${{ env.PROJECT_PATH }}
-        
-      - name: Build project
-        run: dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
-        
       - name: Set VERSION environment variable
         run: |
           $version = $env:GITHUB_REF -replace 'refs/tags/', ''
           $version = $version -replace '^v', ''
           "VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "Extracted version: $version"
+
+      - name: Restore packages
+        run: dotnet restore ${{ env.PROJECT_PATH }}
+        
+      - name: Build project with version
+        run: dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release -p:Version=$env:VERSION
 
       - name: Pack project
         # Use the tag name for versioning by stripping the leading 'v' if present
-        run: dotnet pack ${{ env.PROJECT_PATH }} -p:PackageVersion=$env:VERSION --no-restore --no-build --configuration Release --include-symbols --output ${{ env.PACKAGE_OUTPUT_DIRECTORY }}
+        run: dotnet pack ${{ env.PROJECT_PATH }} -p:Version=$env:VERSION --no-restore --no-build --configuration Release --include-symbols --output ${{ env.PACKAGE_OUTPUT_DIRECTORY }}
 
       - name: Push package
         run: dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}/${{ env.ASSEMPLY_NAME }}.$env:VERSION.nupkg -s ${{ env.NUGET_SOURCE_URL }} -k ${{ secrets.NUGET_AUTH_TOKEN }}

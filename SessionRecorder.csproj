@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net481;net48;net472;net471;net47;net462</TargetFrameworks>
-    <TargetFrameworksForLibraries>net9.0;net8.0;netstandard2.0;net462</TargetFrameworksForLibraries>
-    <TargetFrameworksForLibrariesExtended>net9.0;net8.0;netstandard2.1;netstandard2.0;net462</TargetFrameworksForLibrariesExtended>
-    <TargetFrameworksForPrometheusAspNetCore>net9.0;net8.0</TargetFrameworksForPrometheusAspNetCore>
-    <TargetFrameworksRequiringSystemTextJsonDirectReference>net8.0;netstandard2.1;netstandard2.0;net462</TargetFrameworksRequiringSystemTextJsonDirectReference>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <Version>$(Version)</Version>
+    <AssemblyVersion>$(Version)</AssemblyVersion>
+    <FileVersion>$(Version)</FileVersion>
+    <InformationalVersion>$(Version)</InformationalVersion>
 
     <LangVersion>latest</LangVersion>
     <Description>OpenTelemetry .NET SDK</Description>
@@ -25,8 +25,8 @@
 
   <PropertyGroup Label="PackageProperties">
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/multiplayer-app/multiplayer-otlp-dotnet</RepositoryUrl>
-    <PackageTags>Observability;OpenTelemetry;Monitoring;Telemetry;Tracing;Metrics;Logging;Multiplayer;SessionRecorder</PackageTags>
+    <RepositoryUrl>https://github.com/multiplayer-app/multiplayer-session-recorder-dotnet</RepositoryUrl>
+    <PackageTags>SessionRecorder;Observability;OpenTelemetry;Monitoring;Telemetry;Tracing;Metrics;Logging;Multiplayer;SessionRecorder</PackageTags>
     <PackageProjectUrl>https://www.multiplayer.app/</PackageProjectUrl>
     <Authors>Multiplayer Authors</Authors>
     <IncludeSymbols>true</IncludeSymbols>
@@ -38,6 +38,13 @@
 
   <ItemGroup>
     <None Include=".\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <!-- Exclude examples from NuGet package -->
+  <ItemGroup>
+    <Compile Remove="examples\**" />
+    <EmbeddedResource Remove="examples\**" />
+    <None Remove="examples\**" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,7 +2,8 @@ using System.Globalization;
 using System.Diagnostics;
 using OpenTelemetry.Trace;
 using SessionRecorder.Constants;
-using SessionRecorder.Internal;
+using Multiplayer.OpenTelemetry.Internal;
+
 
 namespace SessionRecorder.Trace;
 
@@ -54,7 +55,7 @@ public sealed class SessionRecorderTraceIdRatioBasedSampler
 
         var traceIdString = samplingParameters.TraceId.ToString();
 
-        if (traceIdString.StartsWith(SessionRecorderTraceIdPrefix.Document) || traceIdString.StartsWith(SessionRecorderTraceIdPrefix.Debug))
+        if (traceIdString.StartsWith(SessionRecorderTraceIdPrefix.ContinuousDebug) || traceIdString.StartsWith(SessionRecorderTraceIdPrefix.Debug))
         {
             return new SamplingResult(SamplingDecision.RecordAndSample);
         }

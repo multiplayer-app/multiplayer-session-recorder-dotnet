@@ -1,92 +1,128 @@
-# Session Recorder .Net
-============================================================================
-##  Introduction
-The `session-recorder` module integrates OpenTelemetry with the Multiplayer platform to enable seamless trace collection and analysis. This library helps developers monitor, debug, and document application performance with detailed trace data. It supports flexible trace ID generation, sampling strategies.
+# Multiplayer Session Recorder .NET
 
+A .NET library for recording and managing debugging sessions with Multiplayer.
+
+## Features
+
+- Start and stop debugging sessions
+- Support for both plain and continuous sessions
+- HTTP request/response capture and masking
+- Custom trace ID generation
+- Session attributes and resource attributes support
 
 ## Installation
-
-To install the `session-recorder` module, use the following command:
 
 ```bash
 dotnet add package SessionRecorder
 ```
 
-## Session Recorder Initialization
+## Quick Start
 
-```cs
+The `SessionRecorder` is implemented as a singleton, ensuring that only one instance exists throughout your application. This makes it easy to access the session recorder from anywhere in your code.
+
+```csharp
 using SessionRecorder;
 using SessionRecorder.Types;
-using SessionRecorder.Config;
 
+// Initialize the session recorder
 var config = new SessionRecorderConfig
 {
-    ApiKey = "your-multiplayer-api-key",
-    TraceIdGenerator = traceIdGenerator,
+    ApiKey = "your-api-key",
+    TraceIdGenerator = new SessionRecorderIdGenerator()
     ResourceAttributes = new Dictionary<string, object>
     {
-        { "service.name", "your-service" },
-        { "host.name", Environment.MachineName },
-    },
-    GenerateSessionShortIdLocally = true,
-    GenerateSessionShortIdFunc = shortIdGenerator
+        { "service.name", "my-service" },
+        { "service.version", "1.0.0" }
+    }
 };
 
-sessionRecorder.init(config)
-```
+// Initialize the session recorder
+SessionRecorder.Init(config);
 
-## Example Usage
-
-```cs
-using SessionRecorder;
-using SessionRecorder.Types;
-using SessionRecorder.Config;
-
-var config = new SessionRecorderConfig
+// Start a session
+var session = new Session
 {
-    ApiKey = "your-multiplayer-api-key",
-    TraceIdGenerator = traceIdGenerator,
+    Name = "My Debug Session",
+    SessionAttributes = new Dictionary<string, object>
+    {
+        { "user.id", "12345" },
+        { "environment", "production" }
+    },
     ResourceAttributes = new Dictionary<string, object>
     {
-        { "service.name", "{YOUR_APPLICATION_NAME}" },
-        { "environment": "{YOUR_APPLICATION_ENVIRONMENT}" },
-        { "host.name", Environment.MachineName },
-    },
+        { "host.name", "server-01" }
+    }
 };
 
-sessionRecorder.Init(config);
+await SessionRecorder.Start(SessionType.PLAIN, session);
 
-sessionRecorder.Start(SessionType.PLAIN);
+// Stop the session
+var stopSession = new Session
+{
+    SessionAttributes = new Dictionary<string, object>
+    {
+        { "completion.status", "success" },
+        { "duration.minutes", 15 }
+    }
+};
 
-// do something here
-
-sessionRecorder.Stop();
+await SessionRecorder.Stop(stopSession);
 ```
 
+## API Reference
 
-## Session Recorder trace Id generator
+### Request Structures
 
-```cs
-using SessionRecorder.Trace;
+#### Start Session Request
 
-// NOTE: this will set 3% of the traces for auto documentation
-SessionRecorderTraceIdConfiguration.ConfigureSessionRecorderTraceIdGenerator(0.03);
+When starting a session, the library sends the following structure to the API:
 
-// or
-
-Activity.TraceIdGenerator = new Func<ActivityTraceId>(() => SessionRecorderTraceIdGenerator.GenerateSessionRecorderTraceId(docSpanSampler));
+```json
+{
+  "name": "string",
+  "tags": [
+    {
+      "key": "string",
+      "value": "string"
+    }
+  ],
+  "sessionAttributes": {},
+  "resourceAttributes": {}
+}
 ```
 
-## Session Recorder trace id ratio based sampler
+#### Stop Session Request
 
-```cs
-using SessionRecorder.Exporter;
-using SessionRecorder.Trace;
+When stopping a session, the library sends the following structure to the API:
 
-// ...
-
-// NOTE: this config will send 5% of all traces
-builder.Services.AddOpenTelemetry().WithTracing(tracing => {
-    tracing.SetSampler(new SessionRecorderTraceIdRatioBasedSampler(0.05));
-});
+```json
+{
+  "sessionAttributes": {}
+}
 ```
+
+### Session Types
+
+- `SessionType.PLAIN`: Standard debugging session
+- `SessionType.CONTINUOUS`: Continuous debugging session with auto-save capabilities
+
+### Configuration
+
+The `SessionRecorderConfig` class supports the following options:
+
+- `ApiKey`: Your Multiplayer API key
+- `TraceIdGenerator`: Custom trace ID generator
+- `ResourceAttributes`: Global resource attributes for all sessions
+- `GenerateSessionShortIdLocally`: Whether to generate session short IDs locally
+
+## HTTP Capture Middleware
+
+The library includes middleware for capturing HTTP requests and responses:
+
+```csharp
+app.UseMiddleware<SessionRecorderHttpCaptureMiddleware>();
+```
+
+## License
+
+MIT License - see LICENSE file for details.
