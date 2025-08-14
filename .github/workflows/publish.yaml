@@ -10,7 +10,7 @@ env:
   PACKAGE_OUTPUT_DIRECTORY: ${{ github.workspace }}/output
   # NUGET_SOURCE_URL: 'https://nuget.pkg.github.com/<GH Team>/index.json'
   NUGET_SOURCE_URL: https://api.nuget.org/v3/index.json
-  ASSEMPLY_NAME: MultiplayerOpentelemetry
+  PACKAGE_NAME: SessionRecorder
 
 jobs:
   publish:
@@ -43,4 +43,4 @@ jobs:
         run: dotnet pack ${{ env.PROJECT_PATH }} -p:Version=$env:VERSION --no-restore --no-build --configuration Release --include-symbols --output ${{ env.PACKAGE_OUTPUT_DIRECTORY }}
 
       - name: Push package
-        run: dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}/${{ env.ASSEMPLY_NAME }}.$env:VERSION.nupkg -s ${{ env.NUGET_SOURCE_URL }} -k ${{ secrets.NUGET_AUTH_TOKEN }}
+        run: dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}/${{ env.PACKAGE_NAME }}.$env:VERSION.nupkg -s ${{ env.NUGET_SOURCE_URL }} -k ${{ secrets.NUGET_AUTH_TOKEN }}
