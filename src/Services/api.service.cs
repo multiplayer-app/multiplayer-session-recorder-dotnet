@@ -15,21 +15,21 @@ namespace Multiplayer.SessionRecorder.Services
 {
     public class StartSessionRequest
 {
-    public string Name { get; set; } = string.Empty;
-    public List<Tag> Tags { get; set; } = new List<Tag>();
-    public Dictionary<string, object> SessionAttributes { get; set; } = new Dictionary<string, object>();
-    public Dictionary<string, object> ResourceAttributes { get; set; } = new Dictionary<string, object>();
+    public string name { get; set; } = string.Empty;
+    public List<Tag> tags { get; set; } = new List<Tag>();
+    public Dictionary<string, object> sessionAttributes { get; set; } = new Dictionary<string, object>();
+    public Dictionary<string, object> resourceAttributes { get; set; } = new Dictionary<string, object>();
 }
 
-public class StopSessionRequest
+    public class StopSessionRequest
 {
-    public Dictionary<string, object> SessionAttributes { get; set; } = new Dictionary<string, object>();
+    public Dictionary<string, object> sessionAttributes { get; set; } = new Dictionary<string, object>();
 }
 
 public class Tag
 {
-    public string? Key { get; set; }
-    public string Value { get; set; } = string.Empty;
+    public string? key { get; set; }
+    public string value { get; set; } = string.Empty;
 }
 
 public class RemoteSessionResponse
@@ -66,9 +66,9 @@ public class ApiService
         _config = MergeConfig(_config, config);
     }
 
-    public async Task<ISession> StartSession(StartSessionRequest requestBody, CancellationToken cancellationToken = default)
+    public async Task<Session> StartSession(StartSessionRequest requestBody, CancellationToken cancellationToken = default)
     {
-        return await MakeRequest<ISession>("/debug-sessions/start", HttpMethod.Post, requestBody, cancellationToken);
+        return await MakeRequest<Session>("/debug-sessions/start", HttpMethod.Post, requestBody, cancellationToken);
     }
 
     public async Task<object?> StopSession(string sessionId, StopSessionRequest requestBody)
@@ -81,9 +81,9 @@ public class ApiService
         return await MakeRequest<object>($"/debug-sessions/{sessionId}/cancel", HttpMethod.Delete);
     }
 
-    public async Task<ISession> StartContinuousSession(StartSessionRequest requestBody, CancellationToken cancellationToken = default)
+    public async Task<Session> StartContinuousSession(StartSessionRequest requestBody, CancellationToken cancellationToken = default)
     {
-        return await MakeRequest<ISession>("/continuous-debug-sessions/start", HttpMethod.Post, requestBody, cancellationToken);
+        return await MakeRequest<Session>("/continuous-debug-sessions/start", HttpMethod.Post, requestBody, cancellationToken);
     }
 
     public async Task<object?> SaveContinuousSession(string sessionId, StartSessionRequest requestBody, CancellationToken cancellationToken = default)
@@ -122,7 +122,16 @@ public class ApiService
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new HttpRequestException($"Network response was not ok: {response.StatusCode}");
+                // Read the response body to get more details about the error
+                var responseBody = await response.Content.ReadAsStringAsync();
+                var errorMessage = $"Network response was not ok: {response.StatusCode}";
+                
+                if (!string.IsNullOrEmpty(responseBody))
+                {
+                    errorMessage += $"\nResponse body: {responseBody}";
+                }
+                
+                throw new HttpRequestException(errorMessage);
             }
 
             if (response.StatusCode == System.Net.HttpStatusCode.NoContent)

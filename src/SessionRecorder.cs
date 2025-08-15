@@ -23,7 +23,7 @@ namespace Multiplayer.SessionRecorder
 
         public SessionRecorderIdGenerator TraceIdGenerator { get; set; } = default!;
 
-        public Dictionary<string, object>? ResourceAttributes { get; set; }
+        public Dictionary<string, object>? resourceAttributes { get; set; }
 
         // Either a bool or a delegate (Func<string>) — nullable union
         public bool? GenerateSessionShortIdLocally { get; set; }
@@ -75,15 +75,20 @@ namespace Multiplayer.SessionRecorder
 
         private void InitInternal(SessionRecorderConfig config)
         {
-            _resourceAttributes = config.ResourceAttributes ?? new Dictionary<string, object>
+            _resourceAttributes = config.resourceAttributes ?? new Dictionary<string, object>
             {
                 { SessionRecorderSpanAttribute.ATTR_MULTIPLAYER_SESSION_RECORDER_VERSION, Constants.Constants.SESSION_RECORDER_VERSION }
             };
 
             _isInitialized = true;
 
+            // GenerateSessionShortIdLocally is optional - if not set or false, we don't generate locally
+            // If true, we use the local generator
             if (config.GenerateSessionShortIdLocally == true)
+            {
                 _sessionShortIdGenerator = SessionRecorderSdk.GetIdGenerator(Constants.Constants.MULTIPLAYER_TRACE_DEBUG_SESSION_SHORT_ID_LENGTH);
+            }
+            // If null or false, we rely on the server to generate the short ID
 
             if (string.IsNullOrEmpty(config.ApiKey))
                 throw new Exception("Api key not provided");
@@ -105,7 +110,7 @@ namespace Multiplayer.SessionRecorder
             if (!_isInitialized)
                 throw new Exception("Configuration not initialized. Call Init() before performing any actions.");
 
-            if (sessionPayload?.ShortId?.Length > 0 && sessionPayload.ShortId.Length != Constants.Constants.MULTIPLAYER_TRACE_DEBUG_SESSION_SHORT_ID_LENGTH)
+            if (sessionPayload?.shortId?.Length > 0 && sessionPayload.shortId.Length != Constants.Constants.MULTIPLAYER_TRACE_DEBUG_SESSION_SHORT_ID_LENGTH)
                 throw new Exception("Invalid short session id");
 
             sessionPayload ??= new Session();
@@ -115,14 +120,14 @@ namespace Multiplayer.SessionRecorder
 
             _sessionType = sessionType;
 
-            sessionPayload.Name ??= DateHelper.GetDefaultSessionName(DateTime.UtcNow);
-            sessionPayload.ResourceAttributes = MergeAttributes(_resourceAttributes, sessionPayload.ResourceAttributes);
+            sessionPayload.name ??= DateHelper.GetDefaultSessionName(DateTime.UtcNow);
+            sessionPayload.resourceAttributes = MergeAttributes(_resourceAttributes, sessionPayload.resourceAttributes);
 
             ISession session = sessionType == SessionType.CONTINUOUS
                 ? await _apiService.StartContinuousSession(ConvertToStartSessionRequest(sessionPayload))
                 : await _apiService.StartSession(ConvertToStartSessionRequest(sessionPayload));
 
-            _shortSessionId = session.ShortId;
+            _shortSessionId = session.shortId;
             _traceIdGenerator.SetSessionId((string)_shortSessionId, _sessionType);
             _sessionState = SessionState.STARTED;
         }
@@ -147,7 +152,7 @@ namespace Multiplayer.SessionRecorder
             ValidateSession("CONTINUOUS");
 
             sessionData ??= new Session();
-            sessionData.Name ??= DateHelper.GetDefaultSessionName(DateTime.UtcNow);
+            sessionData.name ??= DateHelper.GetDefaultSessionName(DateTime.UtcNow);
 
             await _apiService.SaveContinuousSession((string)_shortSessionId, ConvertToStartSessionRequest(sessionData));
         }
@@ -198,7 +203,7 @@ namespace Multiplayer.SessionRecorder
                 throw new Exception("Configuration not initialized. Call Init() before performing any actions.");
 
             sessionPayload ??= new Session();
-            sessionPayload.ResourceAttributes = MergeAttributes(sessionPayload.ResourceAttributes, _resourceAttributes);
+            sessionPayload.resourceAttributes = MergeAttributes(sessionPayload.resourceAttributes, _resourceAttributes);
 
             var state = (await _apiService.CheckRemoteSession(ConvertToStartSessionRequest(sessionPayload))).State;
 
@@ -237,10 +242,10 @@ namespace Multiplayer.SessionRecorder
         {
             return new StartSessionRequest
             {
-                Name = session.Name ?? DateHelper.GetDefaultSessionName(DateTime.UtcNow),
-                Tags = new List<Tag>(), // Initialize empty tags list
-                SessionAttributes = session.SessionAttributes ?? new Dictionary<string, object>(),
-                ResourceAttributes = session.ResourceAttributes ?? new Dictionary<string, object>()
+                name = session.name ?? DateHelper.GetDefaultSessionName(DateTime.UtcNow),
+                tags = session.tags ?? new List<Tag>(), // Use session tags or initialize empty list
+                sessionAttributes = session.sessionAttributes ?? new Dictionary<string, object>(),
+                resourceAttributes = session.resourceAttributes ?? new Dictionary<string, object>()
             };
         }
 
@@ -248,7 +253,7 @@ namespace Multiplayer.SessionRecorder
         {
             return new StopSessionRequest
             {
-                SessionAttributes = session.SessionAttributes ?? new Dictionary<string, object>()
+                sessionAttributes = session.sessionAttributes ?? new Dictionary<string, object>()
             };
         }
     }

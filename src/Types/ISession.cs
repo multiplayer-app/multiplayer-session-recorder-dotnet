@@ -1,21 +1,24 @@
 using System.Collections.Generic;
+using Multiplayer.SessionRecorder.Services;
 
 namespace Multiplayer.SessionRecorder.Types
 {
     public interface ISession
     {
-        string? Name { get; set; }
-        string? ShortId { get; set; }
-        Dictionary<string, object>? ResourceAttributes { get; set; }
-        Dictionary<string, object>? SessionAttributes { get; set; }
+        string? name { get; set; }
+        string? shortId { get; set; }
+        List<Tag>? tags { get; set; }
+        Dictionary<string, object>? resourceAttributes { get; set; }
+        Dictionary<string, object>? sessionAttributes { get; set; }
     }
 
     public class Session : ISession
     {
-        public string? Name { get; set; }
-        public string? ShortId { get; set; }
-        public Dictionary<string, object>? ResourceAttributes { get; set; }
-        public Dictionary<string, object>? SessionAttributes { get; set; }
+        public string? name { get; set; }
+        public string? shortId { get; set; }
+        public List<Tag>? tags { get; set; }
+        public Dictionary<string, object>? resourceAttributes { get; set; }
+        public Dictionary<string, object>? sessionAttributes { get; set; }
     }
 
     public enum SessionType
