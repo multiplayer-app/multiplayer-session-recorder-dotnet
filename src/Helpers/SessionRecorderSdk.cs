@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 
-namespace SessionRecorder.Helpers
+namespace Multiplayer.SessionRecorder.Helpers
 {
     public static class SessionRecorderSdk
     {

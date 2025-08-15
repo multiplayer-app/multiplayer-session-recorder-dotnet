@@ -7,11 +7,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
-using SessionRecorder.Types;
-using SessionRecorder.Config;
-using SessionRecorder.Constants;
+using Multiplayer.SessionRecorder.Types;
+using Multiplayer.SessionRecorder.Config;
+using Multiplayer.SessionRecorder.Constants;
 
-namespace SessionRecorder.Services
+namespace Multiplayer.SessionRecorder.Services
 {
     public class StartSessionRequest
 {

@@ -6,11 +6,11 @@
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <InformationalVersion>$(Version)</InformationalVersion>
+    <PackageId>SessionRecorder</PackageId>
 
     <LangVersion>latest</LangVersion>
-    <Description>OpenTelemetry .NET SDK</Description>
+    <Description>OpenTelemetry .NET SDK for Multiplayer Session Recording</Description>
     <MinVerTagPrefix>core-</MinVerTagPrefix>
-    <PackageTags>SessionRecorder;distributed-tracing;AspNet;AspNetCore</PackageTags>
     <AssemblyName>SessionRecorder</AssemblyName>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

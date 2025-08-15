@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
-using SessionRecorder.Services;
-using SessionRecorder.Types;
-using SessionRecorder.Helpers;
-using SessionRecorder.Constants;
-using SessionRecorder.Trace;
+using Multiplayer.SessionRecorder.Services;
+using Multiplayer.SessionRecorder.Types;
+using Multiplayer.SessionRecorder.Helpers;
+using Multiplayer.SessionRecorder.Constants;
+using Multiplayer.SessionRecorder.Trace;
 
-namespace SessionRecorder
+namespace Multiplayer.SessionRecorder
 {
     public enum SessionState
     {

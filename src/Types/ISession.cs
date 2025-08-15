@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SessionRecorder.Types
+namespace Multiplayer.SessionRecorder.Types
 {
     public interface ISession
     {

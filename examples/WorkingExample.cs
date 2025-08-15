@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using SessionRecorder;
-using SessionRecorder.Types;
-using SessionRecorder.Trace;
+using Multiplayer.SessionRecorder;
+using Multiplayer.SessionRecorder.Types;
+using Multiplayer.SessionRecorder.Trace;
 
 namespace WorkingExample
 {
@@ -19,7 +19,7 @@ namespace WorkingExample
                 var config = new SessionRecorderConfig
                 {
                     ApiKey = "test-api-key",
-                    TraceIdGenerator = new SessionRecorderIdGenerator(),
+                    TraceIdGenerator = new Multiplayer.SessionRecorder.Trace.SessionRecorderIdGenerator(),
                     ResourceAttributes = new Dictionary<string, object>
                     {
                         { "service.name", "test-service" },
@@ -31,7 +31,7 @@ namespace WorkingExample
 
                 // Test 2: Access singleton instance
                 Console.WriteLine("\n2. Accessing singleton instance...");
-                var instance = SessionRecorder.SessionRecorder.Instance;
+                var instance = Multiplayer.SessionRecorder.SessionRecorder.Instance;
                 Console.WriteLine("✓ Singleton instance accessed successfully");
 
                 // Test 3: Create session objects
@@ -62,7 +62,7 @@ namespace WorkingExample
 
                 // Test 5: Get version information
                 Console.WriteLine("\n5. Getting version information...");
-                Console.WriteLine($"Current Version: {SessionRecorder.Constants.Constants.SESSION_RECORDER_VERSION}");
+                Console.WriteLine($"Current Version: {Multiplayer.SessionRecorder.Constants.Constants.SESSION_RECORDER_VERSION}");
                 Console.WriteLine("✓ Version information retrieved successfully");
 
                 Console.WriteLine("\n=== All Tests Passed! ===");

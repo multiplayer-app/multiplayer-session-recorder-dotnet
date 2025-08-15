@@ -1,6 +1,6 @@
 using System;
 
-namespace SessionRecorder.Helpers
+namespace Multiplayer.SessionRecorder.Helpers
 {
     public static class DateHelper
     {

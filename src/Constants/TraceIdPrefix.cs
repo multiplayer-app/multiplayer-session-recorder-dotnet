@@ -1,4 +1,4 @@
-namespace SessionRecorder.Constants;
+namespace Multiplayer.SessionRecorder.Constants;
 
 struct SessionRecorderTraceIdPrefix
 {

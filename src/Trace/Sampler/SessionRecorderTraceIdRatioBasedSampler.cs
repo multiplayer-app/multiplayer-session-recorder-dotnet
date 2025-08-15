@@ -1,11 +1,11 @@
 using System.Globalization;
 using System.Diagnostics;
 using OpenTelemetry.Trace;
-using SessionRecorder.Constants;
+using Multiplayer.SessionRecorder.Constants;
 using Multiplayer.OpenTelemetry.Internal;
 
 
-namespace SessionRecorder.Trace;
+namespace Multiplayer.SessionRecorder.Trace;
 
 public sealed class SessionRecorderTraceIdRatioBasedSampler
     : Sampler

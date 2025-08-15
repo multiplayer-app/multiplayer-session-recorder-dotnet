@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace SessionRecorder.Constants
+namespace Multiplayer.SessionRecorder.Constants
 {
     public static class Constants
     {

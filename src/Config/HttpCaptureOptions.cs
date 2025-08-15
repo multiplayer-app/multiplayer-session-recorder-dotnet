@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Diagnostics;
 
-namespace SessionRecorder.Config
+namespace Multiplayer.SessionRecorder.Config
 {
     public class HttpCaptureOptions
     {

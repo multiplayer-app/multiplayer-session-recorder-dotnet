@@ -9,8 +9,8 @@ using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SessionRecorder.Constants;
-using SessionRecorder.Config;
+using Multiplayer.SessionRecorder.Constants;
+using Multiplayer.SessionRecorder.Config;
 
 public class SessionRecorderHttpCaptureMiddleware
 {

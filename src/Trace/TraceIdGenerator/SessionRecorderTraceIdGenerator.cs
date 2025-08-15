@@ -1,10 +1,10 @@
 using System;
 using System.Diagnostics;
 using OpenTelemetry.Trace;
-using SessionRecorder.Constants;
-using SessionRecorder.Types;
+using Multiplayer.SessionRecorder.Constants;
+using Multiplayer.SessionRecorder.Types;
 
-namespace SessionRecorder.Trace
+namespace Multiplayer.SessionRecorder.Trace
 {
     public class SessionRecorderIdGenerator
     {
