@@ -64,40 +64,66 @@ namespace WorkingExample
                 // Test 5: Get version information
                 Console.WriteLine("\n5. Getting version information...");
                 Console.WriteLine($"Current Version: {Multiplayer.SessionRecorder.Constants.Constants.SESSION_RECORDER_VERSION}");
-                Console.WriteLine("✓ Version information retrieved successfully");
+                                 Console.WriteLine("✓ Version information retrieved successfully");
 
-                // Test 6: Test SDK methods
-                Console.WriteLine("\n6. Testing SDK methods...");
-                try
-                {
-                    // Test CaptureException
-                    var testException = new InvalidOperationException("Test exception for SDK");
-                    SessionRecorderSdk.CaptureException(testException);
-                    Console.WriteLine("✓ CaptureException method called successfully");
+                 // Test 6: Test Init method
+                 Console.WriteLine("\n6. Testing Init method...");
+                 try
+                 {
+                     // Create a test configuration
+                     var testConfig = new SessionRecorderConfig
+                     {
+                         ApiKey = "test-api-key",
+                         ResourceAttributes = new Dictionary<string, object>
+                         {
+                             { "service.name", "test-service" },
+                             { "service.version", "1.0.0" }
+                         },
+                         GenerateSessionShortIdLocally = true,
+                         TraceIdGenerator = new SessionRecorderIdGenerator()
+                     };
 
-                    // Test SaveContinuousSession
-                    SessionRecorderSdk.SaveContinuousSession("Test auto-save reason");
-                    Console.WriteLine("✓ SaveContinuousSession method called successfully");
+                     // Test Init method
+                     SessionRecorder.Init(testConfig);
+                     Console.WriteLine("✓ Init method called successfully");
+                 }
+                 catch (Exception ex)
+                 {
+                     Console.WriteLine($"✗ Init method test failed: {ex.Message}");
+                 }
 
-                    // Test SetAttribute
-                    SessionRecorderSdk.SetAttribute("test.key", "test.value");
-                    Console.WriteLine("✓ SetAttribute method called successfully");
+                 // Test 7: Test SDK methods
+                 Console.WriteLine("\n7. Testing SDK methods...");
+                 try
+                 {
+                     // Test CaptureException
+                     var testException = new InvalidOperationException("Test exception for SDK");
+                     SessionRecorderSdk.CaptureException(testException);
+                     Console.WriteLine("✓ CaptureException method called successfully");
 
-                    // Test HTTP methods with masking
-                    var testJson = "{\"username\":\"testuser\",\"password\":\"secret123\"}";
-                    SessionRecorderSdk.SetHttpRequestBody(testJson, mask: true);
-                    SessionRecorderSdk.SetHttpResponseBody("{\"status\":\"success\"}", mask: false);
-                    Console.WriteLine("✓ HTTP body methods called successfully");
+                     // Test SaveContinuousSession
+                     SessionRecorderSdk.SaveContinuousSession("Test auto-save reason");
+                     Console.WriteLine("✓ SaveContinuousSession method called successfully");
 
-                    // Test RPC methods
-                    SessionRecorderSdk.SetRpcRequestMessage("{\"method\":\"getUser\"}", mask: true);
-                    SessionRecorderSdk.SetRpcResponseMessage("{\"user\":{\"id\":123,\"name\":\"John\"}}", mask: false);
-                    Console.WriteLine("✓ RPC methods called successfully");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"✗ SDK method test failed: {ex.Message}");
-                }
+                     // Test SetAttribute
+                     SessionRecorderSdk.SetAttribute("test.key", "test.value");
+                     Console.WriteLine("✓ SetAttribute method called successfully");
+
+                     // Test HTTP methods with masking
+                     var testJson = "{\"username\":\"testuser\",\"password\":\"secret123\"}";
+                     SessionRecorderSdk.SetHttpRequestBody(testJson, mask: true);
+                     SessionRecorderSdk.SetHttpResponseBody("{\"status\":\"success\"}", mask: false);
+                     Console.WriteLine("✓ HTTP body methods called successfully");
+
+                     // Test RPC methods
+                     SessionRecorderSdk.SetRpcRequestMessage("{\"method\":\"getUser\"}", mask: true);
+                     SessionRecorderSdk.SetRpcResponseMessage("{\"user\":{\"id\":123,\"name\":\"John\"}}", mask: false);
+                     Console.WriteLine("✓ RPC methods called successfully");
+                 }
+                 catch (Exception ex)
+                 {
+                     Console.WriteLine($"✗ SDK method test failed: {ex.Message}");
+                 }
 
                 Console.WriteLine("\n=== All Tests Passed! ===");
                 Console.WriteLine("\nNote: This example demonstrates the library structure.");
