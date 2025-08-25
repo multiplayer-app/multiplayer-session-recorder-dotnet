@@ -75,7 +75,24 @@ public class SessionRecorderHttpCaptureMiddleware
         {
             var headers = context.Request.Headers.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToString());
             if (_options.IsMaskHeadersEnabled)
-                headers = _options.MaskHeaders(headers, span);
+            {
+                // Use custom masking function if provided, otherwise use built-in masking
+                if (_options.MaskHeaders != null)
+                {
+                    headers = _options.MaskHeaders(headers, span);
+                }
+                else
+                {
+                    // Apply built-in sensitive header masking
+                    foreach (var header in headers.Keys.ToList())
+                    {
+                        if (Masking.SensitiveHeaders.Contains(header))
+                        {
+                            headers[header] = Constants.MASK_PLACEHOLDER;
+                        }
+                    }
+                }
+            }
 
             span.SetTag(ATTR_MULTIPLAYER_HTTP_REQUEST_HEADERS, JsonSerializer.Serialize(headers));
         }
@@ -95,7 +112,18 @@ public class SessionRecorderHttpCaptureMiddleware
             if (body.Length < _options.MaxPayloadSizeBytes)
             {
                 if (_options.IsMaskBodyEnabled)
-                    body = _options.MaskBody(body, span);
+                {
+                    // Use custom masking function if provided, otherwise use built-in JSON masking
+                    if (_options.MaskBody != null)
+                    {
+                        body = _options.MaskBody(body, span);
+                    }
+                    else
+                    {
+                        // Apply built-in JSON masking for sensitive fields
+                        body = Masking.MaskJson(body, Masking.SensitiveFields);
+                    }
+                }
 
                 span.SetTag(ATTR_MULTIPLAYER_HTTP_REQUEST_BODY, body);
             }
@@ -115,7 +143,18 @@ public class SessionRecorderHttpCaptureMiddleware
             body = await reader.ReadToEndAsync();
 
             if (_options.IsMaskBodyEnabled)
-                body = _options.MaskBody(body, span);
+            {
+                // Use custom masking function if provided, otherwise use built-in JSON masking
+                if (_options.MaskBody != null)
+                {
+                    body = _options.MaskBody(body, span);
+                }
+                else
+                {
+                    // Apply built-in JSON masking for sensitive fields
+                    body = Masking.MaskJson(body, Masking.SensitiveFields);
+                }
+            }
 
             span.SetTag(ATTR_MULTIPLAYER_HTTP_RESPONSE_BODY, body);
         }
@@ -125,7 +164,24 @@ public class SessionRecorderHttpCaptureMiddleware
         {
             var headers = context.Response.Headers.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToString());
             if (_options.IsMaskHeadersEnabled)
-                headers = _options.MaskHeaders(headers, span);
+            {
+                // Use custom masking function if provided, otherwise use built-in masking
+                if (_options.MaskHeaders != null)
+                {
+                    headers = _options.MaskHeaders(headers, span);
+                }
+                else
+                {
+                    // Apply built-in sensitive header masking
+                    foreach (var header in headers.Keys.ToList())
+                    {
+                        if (Masking.SensitiveHeaders.Contains(header))
+                        {
+                            headers[header] = Constants.MASK_PLACEHOLDER;
+                        }
+                    }
+                }
+            }
 
             span.SetTag(ATTR_MULTIPLAYER_HTTP_RESPONSE_HEADERS, JsonSerializer.Serialize(headers));
         }

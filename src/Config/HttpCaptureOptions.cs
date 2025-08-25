@@ -13,11 +13,9 @@ namespace Multiplayer.SessionRecorder.Config
         public bool IsMaskBodyEnabled { get; set; } = false;
         public int MaxPayloadSizeBytes { get; set; } = 1024 * 1024; // 1MB default
 
-        public Func<Dictionary<string, string>, Activity, Dictionary<string, string>> MaskHeaders { get; set; } = 
-            (headers, activity) => headers;
+        public Func<Dictionary<string, string>, Activity, Dictionary<string, string>>? MaskHeaders { get; set; } = null;
 
-        public Func<string, Activity, string> MaskBody { get; set; } = 
-            (body, activity) => body;
+        public Func<string, Activity, string>? MaskBody { get; set; } = null;
 
         public static HttpCaptureOptions WithDefaults(HttpCaptureOptions options)
         {

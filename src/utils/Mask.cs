@@ -1,9 +1,9 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Multiplayer.SessionRecorder.Constants;
 
 public static class Masking
 {
-    public const string MASK_PLACEHOLDER = "***";
     private const int MAX_DEPTH = 8;
 
     public static readonly HashSet<string> SensitiveFields = new(StringComparer.OrdinalIgnoreCase)
@@ -66,7 +66,7 @@ public static class Masking
         }
         else if (node is JsonValue value && value.TryGetValue(out string? strVal))
         {
-            return MASK_PLACEHOLDER;
+            return Constants.MASK_PLACEHOLDER;
         }
 
         return node;
@@ -88,7 +88,7 @@ public static class Masking
             {
                 if (keysToMask.Contains(key.Key))
                 {
-                    obj[key.Key] = MASK_PLACEHOLDER;
+                    obj[key.Key] = Constants.MASK_PLACEHOLDER;
                 }
                 else
                 {

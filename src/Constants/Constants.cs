@@ -6,6 +6,8 @@ namespace Multiplayer.SessionRecorder.Constants
     {
         public const string MULTIPLAYER_BASE_API_URL = "https://api.multiplayer.app";
         public const int MULTIPLAYER_TRACE_DEBUG_SESSION_SHORT_ID_LENGTH = 8;
+
+        public const string MASK_PLACEHOLDER = "***MASKED***";
         
         /// <summary>
         /// Gets the current version from the assembly
