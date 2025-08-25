@@ -44,17 +44,26 @@ public class SessionRecorderHttpCaptureMiddleware
 
         // Swap response stream
         var originalResponseBody = context.Response.Body;
-        using var responseBodyStream = new MemoryStream();
+        var responseBodyStream = new MemoryStream();
         context.Response.Body = responseBodyStream;
 
-        await _next(context); // proceed down the pipeline
+        try
+        {
+            await _next(context); // proceed down the pipeline
 
-        // Capture Response
-        await CaptureResponse(context, activity, responseBodyStream);
+            // Capture Response
+            await CaptureResponse(context, activity, responseBodyStream);
 
-        // Copy back to original stream
-        responseBodyStream.Seek(0, SeekOrigin.Begin);
-        await responseBodyStream.CopyToAsync(originalResponseBody);
+            // Copy back to original stream
+            responseBodyStream.Seek(0, SeekOrigin.Begin);
+            await responseBodyStream.CopyToAsync(originalResponseBody);
+        }
+        finally
+        {
+            // Ensure we always restore the original stream and dispose the memory stream
+            context.Response.Body = originalResponseBody;
+            responseBodyStream?.Dispose();
+        }
     }
 
     private async Task CaptureRequest(HttpContext context, Activity span)
