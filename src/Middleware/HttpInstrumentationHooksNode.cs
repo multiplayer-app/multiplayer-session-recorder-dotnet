@@ -111,7 +111,7 @@ public class SessionRecorderHttpCaptureMiddleware
         if (_options.CaptureBody && responseBodyStream.Length < _options.MaxPayloadSizeBytes)
         {
             responseBodyStream.Seek(0, SeekOrigin.Begin);
-            using var reader = new StreamReader(responseBodyStream);
+            using var reader = new StreamReader(responseBodyStream, Encoding.UTF8, detectEncodingFromByteOrderMarks: false, bufferSize: 1024, leaveOpen: true);
             body = await reader.ReadToEndAsync();
 
             if (_options.IsMaskBodyEnabled)
