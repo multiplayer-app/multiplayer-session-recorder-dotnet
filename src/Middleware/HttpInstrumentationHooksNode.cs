@@ -11,6 +11,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Multiplayer.SessionRecorder.Constants;
 using Multiplayer.SessionRecorder.Config;
+using Microsoft.AspNetCore.Http.Extensions;
+using static Multiplayer.SessionRecorder.Constants.SessionRecorderSpanAttribute;
 
 public class SessionRecorderHttpCaptureMiddleware
 {
@@ -66,15 +68,19 @@ public class SessionRecorderHttpCaptureMiddleware
             if (_options.IsMaskHeadersEnabled)
                 headers = _options.MaskHeaders(headers, span);
 
-            span.SetTag("multiplayer.http.request.headers", JsonSerializer.Serialize(headers));
+            span.SetTag(ATTR_MULTIPLAYER_HTTP_REQUEST_HEADERS, JsonSerializer.Serialize(headers));
         }
 
         // Body
         if (_options.CaptureBody && context.Request.ContentLength > 0 && context.Request.Body.CanRead)
         {
-            // context.Request.EnableBuffering(); // Not available in older .NET versions
+            // Enable buffering to make the stream seekable
+            context.Request.EnableBuffering();
+            
             using var reader = new StreamReader(context.Request.Body, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, bufferSize: 1024, leaveOpen: true);
             var body = await reader.ReadToEndAsync();
+            
+            // Reset position to beginning so other middleware can read the body
             context.Request.Body.Position = 0;
 
             if (body.Length < _options.MaxPayloadSizeBytes)
@@ -82,7 +88,7 @@ public class SessionRecorderHttpCaptureMiddleware
                 if (_options.IsMaskBodyEnabled)
                     body = _options.MaskBody(body, span);
 
-                span.SetTag("multiplayer.http.request.body", body);
+                span.SetTag(ATTR_MULTIPLAYER_HTTP_REQUEST_BODY, body);
             }
         }
     }
@@ -102,7 +108,7 @@ public class SessionRecorderHttpCaptureMiddleware
             if (_options.IsMaskBodyEnabled)
                 body = _options.MaskBody(body, span);
 
-            span.SetTag("multiplayer.http.response.body", body);
+            span.SetTag(ATTR_MULTIPLAYER_HTTP_RESPONSE_BODY, body);
         }
 
         // Headers
@@ -112,7 +118,7 @@ public class SessionRecorderHttpCaptureMiddleware
             if (_options.IsMaskHeadersEnabled)
                 headers = _options.MaskHeaders(headers, span);
 
-            span.SetTag("multiplayer.http.response.headers", JsonSerializer.Serialize(headers));
+            span.SetTag(ATTR_MULTIPLAYER_HTTP_RESPONSE_HEADERS, JsonSerializer.Serialize(headers));
         }
     }
 }
