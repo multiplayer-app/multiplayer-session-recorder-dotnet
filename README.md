@@ -177,12 +177,14 @@ using Multiplayer.SessionRecorder.Sdk;
 // Initialize the session recorder
 var config = new SessionRecorderConfig
 {
-    ApiKey = "{{YOUR_API_KEY}}",
+    ApiKey = "MULTIPLAYER_OTLP_KEY", // note: replace with your Multiplayer OTLP key
     TraceIdGenerator = new Multiplayer.SessionRecorder.Trace.SessionRecorderIdGenerator(),
     ResourceAttributes = new Dictionary<string, object>
     {
-        { "service.name", "my-service" },
-        { "service.version", "1.0.0" }
+        { "host.name", "server-01" }
+        { "serviceName": "{YOUR_APPLICATION_NAME}" },
+        { "version": "{YOUR_APPLICATION_VERSION}" },
+        { "environment": "{YOUR_APPLICATION_ENVIRONMENT}" },
     }
 };
 
@@ -198,10 +200,6 @@ var session = new Session
         { "user.id", "12345" },
         { "environment", "production" }
     },
-    ResourceAttributes = new Dictionary<string, object>
-    {
-        { "host.name", "server-01" }
-    }
 };
 
 await SessionRecorder.Start(SessionType.PLAIN, session);
